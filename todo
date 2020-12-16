@@ -1,0 +1,79 @@
+import task
+import task_list
+import os
+
+class TodoApp():
+
+    def __init__(self):
+        self.commands = {
+            "?": "Hjälp - används för att visa listan av kommando",
+            "q": "Avsluta - avslutar programmet",
+            "add": "Lägg till - Lägger till en uppgift",
+            "tasks": "Uppgifter - visar kommandon",
+            "finish": "Avsluta - avslutar en uppgift"}
+
+        self.loop = True
+        self.tasklist = task_list.TaskList()
+        self.main()
+        pass
+
+    def show_commands(self):
+        for command, command_description in self.commands.items():
+            print(" " + command + ": " + command_description)
+        
+    def new_task(self):
+        description = input("Ange beskrivning: ")
+        self.tasklist.create_task(description)
+
+    def show_tasks(self):
+        
+        print(self.tasklist)
+
+    def mark_done(self):
+        print("Ange uppgift ID't")
+        self.show_tasks()
+
+        task_id = input("ID: ")
+        if self.tasklist.mark_done(task_id):
+            return "uppgiften är klar"
+
+        return "Denna uppgift finns inte!! Försök igen."
+
+
+    def command_is_valid(self, user_command):
+        for command in self.commands.keys():
+            if user_command == command:
+                return True
+        return False
+
+    def quit(self):
+        self.loop = False
+        
+    def enter_command(self, user_command):
+        if self.command_is_valid(user_command):
+            command_keys = self.commands.keys()
+            # Visar kommandon om kommanden är hälp
+            if user_command == command_keys[0]:
+                self.show_commands()
+            # Avslutar programmet
+            if user_command == command_keys[1]:
+                self.quit()
+            # Skapar en ny uppgift
+            if user_command == command_keys[2]:
+                self.new_task()
+            # Visar uppgifterna
+            if user_command == command_keys[3]:
+                self.show_tasks()
+            # Markerar en uppgift som klar
+            if user_command == command_keys[4]:
+                print(self.mark_done())
+        else:
+            print("ERROR! the command '{}' does not exist!!".format(user_command))
+
+
+    def main(self):
+        while self.loop:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            self.enter_command(input("Ange kommando (q=avsluta, ?=hjälp): "))
+            input()
+        exit()
